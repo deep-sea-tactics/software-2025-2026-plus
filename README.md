@@ -1,6 +1,7 @@
 ![alt text](https://github.com/deep-sea-tactics/Dyver/blob/main/dyver_light.png "Dyver Logo")
 
-Note: Dyver has not reached its MVP state. As such, some features may be completely missing. Under construction!
+> [!NOTE]
+> Dyver has not reached its MVP state. As such, some features listed here may be completely missing. Under construction!
 
 # Dyver
 Dyver is a set of applications specifically tailored to the operation of an ROV. It contains both a topside user interface as well as robot client software.
@@ -42,13 +43,13 @@ Prefer `clang` and its set of tools. Release code will be compiled with `clang`,
 Run the installer program **with an internet connection**, and it'll do the rest!
 
 ## Usage
-Install Dyver Topside on your topside computer (which is ideally running Linux), install Dyver Robot on your robot, and test and configure your network. DSS will help you define and characterize the thruster layout of your ROV, and Dyver can figure out the rest. Test your sensors (including the cameras), ensuring that each one is outputting telemetry on Dyver Topside. Test your method of input and ensure that the thruster configuration makes sense.
-
-Congratulations, Dyver is now fully ready for you to use.
+Install a binary of the topside application onto the topside computer, and install a binary of the robot application onto the robot.
+> [!NOTE]
+> Advanced usage such as modifying cache entries or configuring the network does not have a publicly available source of documentation. This is being actively fixed.
 
 ## Installation (Developers)
 
 1. Build on Linux. If you haven't already, install `cmake` and `clang` with its associated tools (such as `clang-format`)
 2. Clone the repository.
 3. With the repository's master directory as your current working directory, execute `source deps.sh` to install dependencies.
-4. If you've done everything correctly, any Dyver target you choose should build successfully. Nice!
+5. If you've done everything correctly, any Dyver target you choose should build successfully. Nice!
