@@ -40,6 +40,8 @@ constexpr double KILOU_T_U = (1.0e3);
  */
 constexpr double kgf_T_N = 9.80665;
 
+constexpr double DEG_TO_RAD = (M_PI / 180);
+
 /**
  * @brief Returns the square of n
  *
