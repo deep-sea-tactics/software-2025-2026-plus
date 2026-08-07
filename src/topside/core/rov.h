@@ -16,6 +16,8 @@ public:
 	explicit rov_t() {}
 	~rov_t() {}
 
+	void load_from_cache();
+
 	/**
 	 * @brief Create a thruster object
 	 *

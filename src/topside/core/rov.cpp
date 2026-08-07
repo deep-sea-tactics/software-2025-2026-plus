@@ -1,8 +1,11 @@
 #include <algorithm>
 
 #include "rov.h"
+#include "cache/cache_manager.h"
+#include "denseutils.h"
 
 #include <Eigen/Dense>
+#include <stdexcept>
 
 /**
  * @brief Iterates through thrusters and optimizes each individual one using `rov_t::optimize_thruster`
@@ -64,4 +67,59 @@ void rov_t::optimize_thruster(std::shared_ptr<abstract_thruster_t> which, Eigen:
 	std::cout << "Calculated torque production:\n" << calc_torque << std::endl;
 	std::cout << std::endl;
 	*/
+}
+
+void rov_t::load_from_cache()
+{
+	cache_manager_t rov_cache = cache_manager_t("topside_rov_body");
+	rov_cache.load_cache();
+	std::vector<std::string> thruster_keys = rov_cache.get_all_keys_with_scope("thruster");
+	if (thruster_keys.empty())
+	{
+		utils::log("No ROV configured.", utils::MSG_TYPE::ERROR);
+	}
+
+	std::vector<std::string> ids = {};
+
+	for (const auto &key : thruster_keys)
+	{
+		std::vector<std::string> nested_scopes = nest_get_scopes(key);
+
+		if (nested_scopes.empty())
+		{
+			return;
+		}
+
+		std::string id = nested_scopes[1]; // 0.1.2...
+		if (std::find(ids.begin(), ids.end(), id) == ids.end() || ids.empty() == true)
+		{
+			utils::log("Found a thruster: " + id);
+			ids.push_back(id);
+		}
+	}
+
+	for (const auto &id : ids)
+	{
+		std::string nested = nest_scopes({"thruster", id});
+
+		std::string positions = rov_cache.read_buf_or(nest_scopes({nested, "position"}), "<undefined>");
+		std::string facings = rov_cache.read_buf_or(nest_scopes({nested, "facing"}), "<undefined>");
+
+		if (positions == "<undefined>")
+		{
+			throw std::runtime_error("Failure to load ROV; non-existent key " + nest_scopes({nested, "position"}));
+		}
+
+		if (facings == "<undefined>")
+		{
+			throw std::runtime_error("Failure to load ROV; non-existent key " + nest_scopes({nested, "facing"}));
+		}
+
+		Eigen::Vector3d position_m = str_to_vector3d(positions);
+		Eigen::Vector3d facing = str_to_vector3d(facings);
+
+		utils::log("Registered thruster \"" + id + "\" with position \"" + positions + "\" and facing \"" + facings + "\"");
+
+		create_thruster(position_m, facing, 1.0, id);
+	}
 }

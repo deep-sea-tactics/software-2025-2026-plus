@@ -1,6 +1,7 @@
 #include "dss/runtime.h"
 #include "dss/DSS.h"
 
+#include <memory>
 #include <iostream>
 
 #include "networking/dyver/server.h"
@@ -9,6 +10,7 @@
 
 #include "app.h"
 #include "cli/cli.h"
+#include "topside/core/rov.h"
 
 void command_line(DSS::cli_t *p_cli) { p_cli->init(); }
 
@@ -44,11 +46,16 @@ auto main(int argc, char **argv) -> int
 		return 1;
 	}
 
+	std::shared_ptr<rov_t> rov = std::make_shared<rov_t>();
+	rov->load_from_cache();
+	utils::log("Initialization completed.");
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+
 	server_t server = server_t();
 
 	cli_t cli = cli_t("Dyver Tospide CLI");
 	cli.get_on_input()->connect(
-		[&server](std::string got)
+		[&server, rov](std::string got)
 		{
 			if (got == "server-verify")
 			{
@@ -63,6 +70,11 @@ auto main(int argc, char **argv) -> int
 			if (got == "server-kill")
 			{
 				server.kill();
+			}
+
+			if (got == "rov-reload")
+			{
+				rov->load_from_cache();
 			}
 		});
 
