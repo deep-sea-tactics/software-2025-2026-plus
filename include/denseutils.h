@@ -7,6 +7,7 @@
 #define H_DENSE_UTILS
 
 #include "cli/cli.h"
+#include "strutils.h"
 
 #include <cmath>
 #include <sstream>
@@ -72,6 +73,24 @@ inline auto fmt_vector3d(const Eigen::Vector3d &which) -> std::string
 	fmt << ')';
 
 	return fmt.str();
+}
+
+inline auto str_to_vector3d(std::string s) -> Eigen::Vector3d
+{
+	Eigen::Vector3d res = Eigen::Vector3d(0, 0, 0);
+	string_trim(s);
+	std::vector<std::string> vec = string_split_whitespace(s);
+
+	if (vec.size() != 3)
+	{
+		return Eigen::Vector3d();
+	}
+
+	res.x() = string_safe_dcast(vec[0]);
+	res.y() = string_safe_dcast(vec[1]);
+	res.z() = string_safe_dcast(vec[2]);
+
+	return res;
 }
 
 #endif
