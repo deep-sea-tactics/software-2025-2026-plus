@@ -270,7 +270,7 @@ static const test_t TEST_CLIENT_SERVER = test_t("test_client_server", __LINE__,
 static const test_t TEST_CACHE_MANAGER = test_t("test_cache_manager", __LINE__,
 	[]()
 	{
-		std::string nest_res = nest_keys({"thruster", "test"});
+		std::string nest_res = nest_scopes({"thruster", "test"});
 		if (nest_res != "thruster.test")
 		{
 			return false;
