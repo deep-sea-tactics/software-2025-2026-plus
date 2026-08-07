@@ -28,7 +28,7 @@ const std::string LEX_NEST_DELIM = ".";
 
 const int KP_SIZE = 2;
 
-inline auto nest_keys(const std::vector<std::string> &args) -> std::string
+inline auto nest_scopes(const std::vector<std::string> &args) -> std::string
 {
 	std::stringstream res;
 	std::string sres = "";
@@ -45,6 +45,23 @@ inline auto nest_keys(const std::vector<std::string> &args) -> std::string
 	sres.pop_back();
 
 	return sres;
+}
+
+inline auto nest_get_scopes(std::string nested_key) -> std::vector<std::string>
+{
+	std::vector<std::string> tokens = string_split(nested_key, LEX_NEST_DELIM);
+	return tokens;
+}
+
+inline auto nest_get_last_scope(std::string nested_key) -> std::string
+{
+	std::vector<std::string> tokens = nest_get_scopes(nested_key);
+	if (tokens.empty())
+	{
+		return std::string();
+	}
+
+	return tokens.back();
 }
 
 class cache_manager_t
